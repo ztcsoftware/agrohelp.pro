@@ -1,0 +1,498 @@
+extends layout
+
+block content
+  .container.d-flex.justify-content-left.mt-1
+    ul.pagination.shadow-lg
+      li.page-item
+        a.page-link(href='https://agrohelp.pro')
+          i.fa.fa-home
+          small Αρχική σελίδα
+      li.page-item
+        a.page-link(href='https://agrohelp.pro/dashboard')
+          i.fa.fa-file.mr-1.ml-0
+          small Dashboard &nbsp;     
+      li.page-item
+        a.page-link(href='https://agrohelp.pro/farmers')
+          i.fa.fa-id-badge.mr-1.ml-0
+          small Συνεργαζόμενοι καλλιεργητές &nbsp;
+      li.page-item.active
+        a.page-link(href='#')
+          i.fa.fa-clipboard.mr-1.ml-0
+          small Στοιχεία καλλιεργητή &nbsp;      
+  .container-sm.mt-0(style='padding-left: 100px')
+    .row
+      .col-4
+        .card.shadow-sm.p-1.mb-2.bg-white.rounded
+          if results.length
+            each result in results
+              if (result.cropName == 'Kiwi')
+                img.card-img-top(src='/pics/kiwi_field.jpg', height='387',alt='Kiwi')
+              else
+                if (result.cropName == 'Olive')
+                  img.card-img-top(src='/pics/olive_field.jpg', height='387',alt='Ελιά')
+                else
+                  if (result.cropName == 'Apple')
+                    img.card-img-top(src='/pics/apple_field.jpeg',height='387', alt='Μήλο')
+                  else
+                    if (result.cropName == 'Tobacco')
+                      img.card-img-top(src='/pics/tobacco_field.jpeg',height='387', alt='Καπνά')
+                    else
+                      if (result.cropName == 'Rice')
+                        img.card-img-top(src='/pics/rice_field.jpeg',height='387', alt='Ρύζι')
+                      else
+                        if (result.cropName == 'Wheat')
+                          img.card-img-top(src='/pics/wheat_field.jpeg',height='387', alt='Σιτάρι')
+                        else
+                          if (result.cropName == 'Cotton')
+                            img.card-img-top(src='/pics/cotton_field.jpeg',height='387', alt='Βαμβάκι')    
+                          else
+                            if (result.cropName == 'Strawberry')
+                              img.card-img-top(src='/pics/strawberry_field.jpeg',height='387', alt='Φράουλα')    
+                            else
+                              if (result.cropName == 'Vineyard')
+                                img.card-img-top(src='/pics/vineyard_field.jpeg',height='387', alt='Αμπέλι')
+                              else
+                                if (result.cropName == 'Tomato')
+                                  img.card-img-top(src='/pics/tomato_field.jpeg',height='387', alt='Ντομάτα')
+                                else
+                                  if (result.cropName == 'Potato')
+                                    img.card-img-top(src='/pics/potato_field.jpeg',height='387', alt='Πατάτα')
+                                  else
+                                    if (result.cropName == 'Watermelon')
+                                      img.card-img-top(src='/pics/watermelon_field.jpeg',height='387', alt='Καρπούζι')
+                                    else
+                                      if (result.cropName == 'Cherry')
+                                        img.card-img-top(src='/pics/cherry_field.jpeg',height='387', alt='Κεράσι')
+                                      else
+                                        if (result.cropName == 'Corn')
+                                          img.card-img-top(src='/pics/corn_field.png',height='387', alt='Καλαμπόκι')
+                                        else
+                                          if (result.cropName == 'Sugarbeet')
+                                            img.card-img-top(src='/pics/sugarbeet_field.jpeg',height='387', alt='Ζαχαρότευτλα')
+                                          else
+                                            if (result.cropName == 'Orange')
+                                              img.card-img-top(src='/pics/orange_field.jpeg',height='387', alt='Πορτοκάλι')
+                                            else
+                                              if (result.cropName == 'Lemon')
+                                                img.card-img-top(src='/pics/lemon_field.jpeg',height='387', alt='Λεμόνι')
+                                              else
+                                                if (result.cropName == 'Bean')
+                                                  img.card-img-top(src='/pics/bean_field.jpeg',height='387', alt='Φασόλια')
+                                                else                    
+                                                img.card-img-top(src='/pics/no_image.jpg', alt='No pic')         
+          .card-body
+            if results.length
+              each result  in results
+                each user  in result.users
+                  h5
+                    b
+                      | #{user.first_name} #{user.last_name}
+                  h6    
+                    p  
+                      | #{result.stremmata} Στρέμματα #{result.cropName}
+                    p  
+                      | Τοποθεσία : #{location} 
+  
+      .col-6
+        .card.shadow-sm.p-4.mb-2.bg-white.rounded
+          .card-title
+            h5
+              b
+                | Περιοχή καλλιέργειας 
+          .card-body
+          
+            style.
+              #menu {
+              position: absolute;
+              background: #fff;
+              padding: 10px;
+              font-family: 'Open Sans', sans-serif;
+              }    
+            #map(style='width: auto; height: 380px;')      
+            #menu
+              input#streets-v11(type='radio', name='rtoggle', value='streets', checked='checked')
+              label(for='streets-v11') streets
+              input#outdoors-v11(type='radio', name='rtoggle', value='outdoors')
+              label(for='outdoors-v11') outdoors
+              input#satellite-v9(type='radio', name='rtoggle', value='satellite')
+              label(for='satellite-v9') satellite
+
+           
+            script.
+              
+              mapboxgl.accessToken = 'pk.eyJ1IjoienRjc2...';
+              if (!mapboxgl.supported()) {
+                alert('Το πρόγραμμα παρουσίασης ιστοσελίδων δεν υποστηρίζει Mapbox GL, δοκίμασε ένα άλλο πρόγραμμα');
+                } else {
+                    
+                      var map = new mapboxgl.Map({
+                          container: 'map',
+                          style: 'mapbox://styles/mapbox/streets-v11',
+                          center: [ #{lng} ,#{lat} ], 
+
+                          zoom:13
+                      });
+                      var marker = new mapboxgl.Marker().setLngLat([#{lng} ,#{lat} ]).addTo(map);
+
+                      map.addControl(new mapboxgl.NavigationControl());
+
+                      var layerList = document.getElementById('menu');
+                      var inputs = layerList.getElementsByTagName('input');
+
+                      function switchLayer(layer) {
+                        var layerId = layer.target.id;
+                        map.setStyle('mapbox://styles/mapbox/' + layerId);
+                      }
+
+                      for (var i = 0; i < inputs.length; i++) {
+                      inputs[i].onclick = switchLayer;
+                      }
+                    
+
+              }
+            //- h4
+            //-   b Crop map location
+  .container-sm(style='padding-left: 100px')
+    .row  
+      .col-6
+        .card.shadow-sm.p-3.mb-3.bg-white.rounded
+          .card-title
+            style.
+              h5 span {
+              font-size: 22px;
+              }
+              h5 input.search-input {
+              width: 300px;
+              margin-left: auto;
+              float: right
+              }
+            h5
+              span Ιστορικό Ποτισμάτων
+                  input.form-control.search-input.col-sm-3(type='search', placeholder='έτος ή μήνας', data-table='data-list')
+          .card-body
+            style.
+              table {
+                height:240px;
+                width:100%;
+              }
+              thead {
+                  position: sticky;
+                  top: 0;
+                  width:100%;
+              }
+                       
+            table.table.table-striped.table-responsive.data-list
+              thead.thead-dark
+                tr
+                  th(scope='col-3') #
+                  th(scope='col-3') Περιοχή
+                  th(scope='col-3') Ημερομηνία
+                  th(scope='col-4') Ώρες άρδευσης
+              tbody
+                if results.length
+                  each result  in results
+                    each irri, index  in result.irris
+                          tr
+                            th(scope='row') #{index+1}
+                            td #{location}
+                            if dates.length
+                              td
+                                h6
+                                  small #{dates[index]}                               
+                            td #{irri.irrigationHours}
+          script.
+            (function(document) {
+            'use strict';
+            var TableFilter = (function(myArray) {
+            var search_input;
+            function _onInputSearch(e) {
+            search_input = e.target;
+            var tables = document.getElementsByClassName(search_input.getAttribute('data-table'));
+            myArray.forEach.call(tables, function(table) {
+            myArray.forEach.call(table.tBodies, function(tbody) {
+            myArray.forEach.call(tbody.rows, function(row) {
+            var text_content = row.textContent.toLowerCase();
+            var search_val = search_input.value.toLowerCase();
+            row.style.display = text_content.indexOf(search_val) > -1 ? '' : 'none';
+            });
+            });
+            });
+            }
+            return {
+            init: function() {
+            var inputs = document.getElementsByClassName('search-input');
+            myArray.forEach.call(inputs, function(input) {
+            input.oninput = _onInputSearch;
+            });
+            }
+            };
+            })(Array.prototype);
+            document.addEventListener('readystatechange', function() {
+            if (document.readyState === 'complete') {
+            TableFilter.init();
+            }
+            });
+            })(document);
+                  
+      .col-5
+        .card.shadow-sm.p-4.mb-2.bg-white.rounded
+          .card-title
+            h5
+              b
+                | Γράφημα ποτισμάτων
+          .card-body
+            figure.highcharts-figure
+              #container
+              p.highcharts-description.mt-4
+                | Στο γράφημα εμφανίζεται για κάθε έτος καλλιέργειας οι ώρες ποτίσματος ανά μήνα.
+                | Τα στοιχεία παρέχονται από τον καλλιεργητή με δική του ευθύνη, καταχωρούνται στη βάση δεδομένων με τη 
+                | χρήση της εφαρμογής 
+                a(href='https://play.google.com/store/apps/details?id=com.ztcsoftware.agrohelp',target="_blank") Agrohelp 
+                | για smartphone.
+              if hours.length            
+                    script.
+                      Highcharts.chart('container', {
+                        chart: {
+                          type: 'line'
+                        },
+                        title: {
+                          text: 'Ώρες ποτίσματος ανά μήνα'
+                        },
+                        subtitle: {
+                          text: 'Πηγή: Καλλιεργητής'
+                        },
+                        xAxis: {
+                          categories: [
+                            'Απρ',
+                            'Μαι',
+                            'Ιουν',
+                            'Ιουλ',
+                            'Αυγ',
+                            'Σεπ',
+                            'Οκτ'
+                          ],
+                          crosshair: true
+                        },
+                        yAxis: {
+                          min: 0,
+                          title: {
+                            text: 'Πλήθος ωρών'
+                          }
+                        },
+                        /* tooltip: {
+                          formatter: function () {
+                            return this.points.reduce(function (s, point) {
+                            return s + '<br/>' + point.series.name + ': ' +
+                            point.y + 'm';
+                              }, '<b>' + this.x + '</b>');
+                            },
+                            shared: true
+                        }, */
+                        plotOptions: {
+                          line: {
+                                dataLabels: {
+                                    enabled: true
+                                },
+                                enableMouseTracking: false
+                            }
+                        },
+                        
+                         series: !{JSON.stringify(hours)}
+                        
+                         
+                        });  
+  .container-sm(style='padding-left: 100px')
+    .row                        
+      .col-6
+        .card.shadow-sm.p-4.mb-4.bg-white.rounded
+          .card-title
+            style.
+              h5 span {
+              font-size: 22px;
+              }
+              h5 input.search-input {
+              width: 300px;
+              margin-left: auto;
+              float: right
+              }
+            h5
+              span Ιστορικό Λιπάνσεων, Γεωργ. Φαρμάκων
+              input.form-control.search-input.col-sm-3(type='search', placeholder='έτος ή μήνας ή λίπασμα', data-table='data-list-fert')
+          .card-body
+            style.
+              table {
+                height:540px;
+                width:100%;
+              }
+              thead {
+                  position: sticky;
+                  top: 0;
+                  width:100%;
+              }
+                       
+            table.table.table-striped.table-responsive.data-list-fert
+              thead.thead-dark
+                tr
+                  th(scope='col-3') #
+                  th(scope='col-3') Περιοχή
+                  th(scope='col-3') Ημερομηνία
+                  th(scope='col-3') Λίπασμα
+                  th(scope='col-3') Βάρος (Kg)
+              tbody
+                if results.length
+                  each result  in results
+                    each treat, index  in result.treats
+                      if  types[index] !='Πότισμα' 
+                        if treat.treatmentName !='Watering' 
+                          tr
+                            th(scope='row') #{index+1}
+                            td 
+                              h6
+                                small #{loc}
+                            if datesT.length
+                              td
+                                h6
+                                  small #{datesT[index]}                               
+                            td 
+                              h6
+                                small #{treatmentNameInGreek[index]}
+                            td 
+                              h6
+                                small #{treat.packageWeight*treat.packageAmount}
+          script.
+            (function(document) {
+            'use strict';
+            var TableFilter = (function(myArray) {
+            var search_input;
+            function _onInputSearch(e) {
+            search_input = e.target;
+            var tables = document.getElementsByClassName(search_input.getAttribute('data-table'));
+            myArray.forEach.call(tables, function(table) {
+            myArray.forEach.call(table.tBodies, function(tbody) {
+            myArray.forEach.call(tbody.rows, function(row) {
+            var text_content = row.textContent.toLowerCase();
+            var search_val = search_input.value.toLowerCase();
+            row.style.display = text_content.indexOf(search_val) > -1 ? '' : 'none';
+            });
+            });
+            });
+            }
+            return {
+            init: function() {
+            var inputs = document.getElementsByClassName('search-input');
+            myArray.forEach.call(inputs, function(input) {
+            input.oninput = _onInputSearch;
+            });
+            }
+            };
+            })(Array.prototype);
+            document.addEventListener('readystatechange', function() {
+            if (document.readyState === 'complete') {
+            TableFilter.init();
+            }
+            });
+            })(document);  
+      .col-5
+        .card.shadow-sm.p-4.mb-2.bg-white.rounded
+          .card-title
+            h5
+              b
+                | Γράφημα Λιπάνσεων (Άζωτο-Φώσφορος-Κάλιο)
+          .card-body
+            .buttons
+              button#2020.active
+                | 2020
+              button#2021
+                | 2021
+              button#2022
+                | 2022
+            figure.highcharts-figure
+              #container_fert
+              p.highcharts-description
+                | Στο γράφημα εμφανίζεται για κάθε έτος καλλιέργειας τα κιλά αζώτου, φωσφόρου και καλίου που εφάρμοσε ο 
+                | καλλιεργητής στον αγρό του,(για λιπάσματα της κατηγορίας "Δικό μου προϊόν Ν-Ρ-Κ"). Τα στοιχεία παρέχονται από τον καλλιεργητή με δική του ευθύνη, καταχωρούνται στη βάση δεδομένων με τη 
+                | χρήση της εφαρμογής 
+                a(href='https://play.google.com/store/apps/details?id=com.ztcsoftware.agrohelp',target="_blank") Agrohelp 
+                | για smartphone.            
+                script.
+                  var chart = Highcharts.chart('container_fert', {
+                    chart: {
+                      type: 'column'
+                    },
+                    title: {
+                      text: 'Κιλά (Ν-Ρ-Κ) ανά μήνα'
+                    },
+                    subtitle: {
+                      text: 'Πηγή: Καλλιεργητής'
+                    },
+                    xAxis: {
+                      categories: [
+                        'Ιαν','Φεβ','Μαρ','Απρ',
+                        'Μαι','Ιουν','Ιουλ','Αυγ',
+                        'Σεπ','Οκτ','Νοε','Δεκ'
+                      ],
+                      crosshair: true
+                    },
+                    yAxis: {
+                      min: 0,
+                      title: {
+                        text: 'Κιλά (Kg)'
+                      }
+                    },
+                    tooltip: {
+                      formatter: function () {
+                        return this.points.reduce(function (s, point) {
+                        return s + '<br/>' + point.series.name + ': ' +
+                        point.y + ' Kg';
+                          }, '<b>' + this.x + '</b>');
+                        },
+                        shared: true
+                    }, 
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0
+                        }
+                    },
+                    
+                     /* series: !{JSON.stringify(hours)} */
+                     series: !{JSON.stringify(final[2020].slice())}
+                     
+                    });
+                    var years = [2020, 2021];
+
+                    years.forEach(function (year) {
+                        var btn = document.getElementById(year);
+
+                        btn.addEventListener('click', function () {
+
+                            document.querySelectorAll('.buttons button.active').forEach(function (active) {
+                                active.className = '';
+                              
+                            });
+                            btn.className = 'active';
+                            if (year =='2020'){
+                              chart.update({
+                                subtitle: {
+                                  text: 'Πηγή: Καλλιεργητής. Δεδομένα έτους : '+ year
+                                },
+                                      series: !{JSON.stringify(final[2020].slice())}
+                                  }
+                                );
+                              } else
+                               if(year == '2021'){
+                                chart.update({
+                                  subtitle: {
+                                    text: 'Πηγή: Καλλιεργητής. Δεδομένα έτους : '+ year
+                                  },
+                                        series: !{JSON.stringify(final[2021].slice())}
+                                    }
+                                  );
+                              }  
+                            
+                              
+                                
+                                });
+                        });           
+  link(href='/css/button_fert_graph.css', rel='stylesheet')
+  include footer.pug
