@@ -11,6 +11,7 @@ Custom Search engine (developed with mongodb + nodejs)
 
 * Το αρχείο search περιλαμβάνει δυο post ένα για τα προϊόντα και ένα για τις θεραπείες.
 * Το αρχείο farmerdata.js περιέχει τον κώδικα που παρουσιάζει τη συνολική εικόνα της καλλιέργειας (φωτο + στατιστικά ποτισμάτων + λιπασμάτων + γράφημα + εικόνα(χαρτης gps data) από την τοποθεσία του αγρού)
+* Στο αρχείο farmerdata.pug είναι το layout που εμφανίζεται στο crop_report.png 
 
 (En)
 
@@ -20,4 +21,4 @@ The criteria are : type of crop, name and date of creation.
 
 * The search file includes two posts one for products and one for treatments.
 * Farmerdata.js file contains the source code for : (photo + statistics for watering and fertilizes + graphs + crop field map from gps data provided from farmer)
- 
+* For the implementation of the layout presented in crop_report.png take a look at farmerdata.pug
